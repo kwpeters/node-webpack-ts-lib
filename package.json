@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "WEBPACK_ENV=production webpack --config webpack.config.js --progress --colors",
-    "dev": "WEBPACK_ENV=development webpack --config webpack.config.js --progress --colors --watch"
+    "dev": "WEBPACK_ENV=development webpack --config webpack.config.js --progress --colors --watch",
+    "postinstall": "postinstall-build dist --script build"
   },
   "author": "Kevin Peters <kwpeters@gmail.com>",
   "license": "MIT",
@@ -16,5 +17,8 @@
     "source-map-loader": "^0.2.1",
     "typescript": "^2.2.2",
     "webpack": "^2.4.1"
+  },
+  "dependencies": {
+    "postinstall-build": "^3.0.1"
   }
 }
