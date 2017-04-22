@@ -8,4 +8,8 @@ export class Person {
         this._lastName = lastName;
     }
 
+    public speak(): string {
+        return `Hello, my name is ${this._firstName} ${this._lastName}`;
+    }
+
 }

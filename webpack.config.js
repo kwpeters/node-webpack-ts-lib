@@ -1,11 +1,9 @@
 "use strict";
 
-const webpack = require("webpack");
-const path = require("path");
-const fs = require("fs");
-
-const libraryName = "index";
-let outputFile;
+const webpack = require('webpack');
+const path = require('path');
+const fs = require('fs');
+const build = require('./build');
 
 const nodeModules = {};
 fs.readdirSync("node_modules")
@@ -17,11 +15,12 @@ fs.readdirSync("node_modules")
 });
 
 const plugins = [];
+let buildConfig;
 if (process.env.WEBPACK_ENV === "production") {
     plugins.push(new webpack.optimize.UglifyJsPlugin({ minimize: true }));
-    outputFile = libraryName + ".min.js";
+    buildConfig = build.getConfig(build.buildTypeEnum.PRODUCTION);
 } else {
-    outputFile = libraryName + ".js";
+    buildConfig = build.getConfig(build.buildTypeEnum.DEV);
 }
 
 module.exports = {
@@ -29,8 +28,8 @@ module.exports = {
     target: "node",
     output: {
         libraryTarget: "commonjs2",
-        path:          path.join(__dirname, "dist"),
-        filename:      outputFile
+        path:          buildConfig.outputDir,
+        filename:      'index.js'
     },
     devtool: "source-map",
     resolve: {

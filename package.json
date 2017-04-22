@@ -2,12 +2,15 @@
   "name": "node-webpack-ts-lib",
   "version": "1.0.0",
   "description": "A sample library written in TypeScript and bundled using Webpack.",
-  "main": "dist/index.js",
+  "main": "dist/production/index.js",
+  "typings": "dist/production/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "WEBPACK_ENV=production webpack --config webpack.config.js --progress --colors",
+    "build-dev": "node ./build.js dev",
+    "build-prod": "node ./build.js production",
+    "build": "npm run build-dev && npm run build-prod",
     "dev": "WEBPACK_ENV=development webpack --config webpack.config.js --progress --colors --watch",
-    "postinstall": "postinstall-build dist --script build"
+    "postinstall": "postinstall-build dist --script build-prod"
   },
   "author": "Kevin Peters <kwpeters@gmail.com>",
   "license": "MIT",
