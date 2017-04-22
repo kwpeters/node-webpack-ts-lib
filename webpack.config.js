@@ -44,5 +44,6 @@ module.exports = {
             { enforce: "pre", test: /\.js$/, loader: "source-map-loader" }
         ]
     },
+    plugins:   plugins,
     externals: nodeModules
 };
