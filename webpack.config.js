@@ -1,7 +1,6 @@
 "use strict";
 
 const webpack = require('webpack');
-const path = require('path');
 const fs = require('fs');
 const build = require('./build');
 
