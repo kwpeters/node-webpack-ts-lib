@@ -5,9 +5,9 @@ const fs = require('fs');
 const build = require('./build');
 
 const nodeModules = {};
-fs.readdirSync("node_modules")
+fs.readdirSync("node_modules")                     // Iterate over the folders in node_modules
 .filter(function (curModuleDir) {
-    return [".bin"].indexOf(curModuleDir) === -1;
+    return [".bin"].indexOf(curModuleDir) === -1;  // Exclude the .bin folder
 })
 .forEach(function (curModuleDir) {
     nodeModules[curModuleDir] = "commonjs " + curModuleDir;
@@ -55,7 +55,7 @@ const browserConfig = {
         libraryTarget: "var",
         library:       "myLib",
         path:          buildConfig.outputDir,
-        filename:      'myLib.js'
+        filename:      'myLib.js'   // TODO: The production version should just be .min.js
     },
     devtool: "source-map",
     resolve: {
@@ -72,7 +72,7 @@ const browserConfig = {
         ]
     },
     plugins:   plugins,
-    externals: nodeModules
+    externals: nodeModules   // TODO: Figure out how dependencies should be brought into browser.
 };
 
 module.exports = [nodeConfig, browserConfig];
