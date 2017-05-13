@@ -1,17 +1,37 @@
 "use strict";
 
 const webpack = require('webpack');
-const fs = require('fs');
 const build = require('./build');
 
-const nodeModules = {};
-fs.readdirSync("node_modules")                     // Iterate over the folders in node_modules
-.filter(function (curModuleDir) {
-    return [".bin"].indexOf(curModuleDir) === -1;  // Exclude the .bin folder
-})
-.forEach(function (curModuleDir) {
-    nodeModules[curModuleDir] = "commonjs " + curModuleDir;
-});
+const modules = Object.keys(require('./package.json').dependencies);
+
+const nodeExternalPackages = modules.reduce(function (acc, curModule) {
+    //
+    // When building for Node.js, we should not include dependent packages.
+    // Dependent packages will be automatically installed using npm and the
+    // package.json dependencies mechanism.
+    //
+    acc[curModule] = "commonjs " + curModule;
+    return acc;
+}, {});
+
+//
+// When packaging for the web/browsers, we will include all dependencies in the
+// bundle.
+// Note: If the TypeScript configuration for this project is targeting anything
+// less than "es2015", tree shaking will not be done and dependent modules will
+// be include in their entirety.
+//
+const browserExternalPackages = {};
+//
+// If you want to bundle for the web without this module's dependencies, browser
+// clients will have to include this package's dependencies before pulling in
+// this module.  To do this, uncomment the following code.
+//
+// const browserExternalPackages = modules.reduce(function (acc, curModule) {
+//     acc[curModule] = curModule;
+//     return acc;
+// }, {});
 
 const plugins = [];
 let buildConfig;
@@ -45,7 +65,7 @@ const nodeConfig = {
         ]
     },
     plugins:   plugins,
-    externals: nodeModules
+    externals: nodeExternalPackages
 };
 
 const browserConfig = {
@@ -72,7 +92,7 @@ const browserConfig = {
         ]
     },
     plugins:   plugins,
-    externals: nodeModules   // TODO: Figure out how dependencies should be brought into browser.
+    externals: browserExternalPackages
 };
 
 module.exports = [nodeConfig, browserConfig];

@@ -80,7 +80,7 @@ module.exports = require("lodash");
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var _ = __webpack_require__(0);
+var lodash_1 = __webpack_require__(0);
 var Person = (function () {
     function Person(firstName, lastName) {
         this._firstName = firstName;
@@ -90,7 +90,7 @@ var Person = (function () {
         return "Hello, my name is " + this._firstName + " " + this._lastName;
     };
     Person.prototype.random = function () {
-        return _.random(1, 10);
+        return lodash_1.random(1, 10);
     };
     return Person;
 }());

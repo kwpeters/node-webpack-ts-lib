@@ -1,4 +1,4 @@
-import * as _ from "lodash";
+import {random} from "lodash";
 
 export class Person {
 
@@ -15,7 +15,7 @@ export class Person {
     }
 
     public random(): number {
-        return _.random(1, 10);
+        return random(1, 10);
     }
 
 }
