@@ -3,6 +3,7 @@ const childProcess = require('child_process');
 const del = require('del');
 
 
+const libraryName   = 'myLib';
 const buildTypeEnum = {
     DEV:        'dev',
     PRODUCTION: 'production'
@@ -23,8 +24,16 @@ function getConfig(buildType) {
     "use strict";
 
     return buildType === buildTypeEnum.PRODUCTION ?
-           {outputDir: path.join(__dirname, "dist", 'production')} :
-           {outputDir: path.join(__dirname, "dist", 'dev')};
+        {
+            webpackSwitches:   [],
+            nodeOutputFile:    'index-min.js',
+            browserOutputFile: libraryName + '-min.js'
+        } :
+        {
+            webpackSwitches:   [],
+            nodeOutputFile:    'index.js',
+            browserOutputFile: libraryName + '.js'
+        };
 }
 
 
@@ -35,33 +44,33 @@ function main() {
     // add the node_modules/.bin folder to the PATH.
     const augmentedPath = getPathWithNpmBin();
 
-    // Delete the current type definitions file
-    del.sync(['dist/index.d.ts']);
+    // Clear out any existing build products.
+    del.sync('dist/');
 
-    // The command used to run webpack.
-    const cmd = 'webpack --config webpack.config.js --progress --colors';
+    //
+    // Do a development build and a production build.
+    //
+    [buildTypeEnum.DEV, buildTypeEnum.PRODUCTION]
+    .forEach(function (curBuildType) {
+        const config = getConfig(curBuildType);
 
-    const buildType = process.argv[2] === 'production' ?
-                      buildTypeEnum.PRODUCTION :
-                      buildTypeEnum.DEV;
-    const buildConfig = getConfig(buildType);
+        const options = {
+            env: {
+                WEBPACK_ENV: curBuildType,
+                PATH:        augmentedPath
+            }
+        };
 
-    // Clean the output directory.
-    del.sync(buildConfig.outputDir);
+        const cmd = 'webpack ' +
+                    config.webpackSwitches.join(' ') + ' ' +
+                    '--config webpack.config.js';
 
-    const options = {
-        env: {
-            WEBPACK_ENV: buildType,
-            PATH:        augmentedPath
-        }
-    };
-
-    console.log(`Building ${buildType}...`);
-
-    const stdout = childProcess.execSync(cmd, options);
-    console.log(Buffer.isBuffer(stdout)? stdout.toString(): stdout);
-
-    console.log("Build succeeded.");
+        console.log(`Building ${curBuildType}...`);
+        console.log(cmd);
+        const stdout = childProcess.execSync(cmd, options);
+        console.log(stdout.toString());        // stdout may be a Buffer
+        console.log("Build succeeded.");
+    });
 }
 
 

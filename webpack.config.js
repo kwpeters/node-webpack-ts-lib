@@ -1,7 +1,8 @@
 "use strict";
 
 const webpack = require('webpack');
-const build = require('./build');
+const path    = require('path');
+const build   = require('./build');
 
 const modules = Object.keys(require('./package.json').dependencies);
 
@@ -47,8 +48,8 @@ const nodeConfig = {
     target: "node",
     output: {
         libraryTarget: "commonjs2",
-        path:          buildConfig.outputDir,
-        filename:      'index.js'
+        path:          path.join(__dirname, 'dist'),
+        filename:      buildConfig.nodeOutputFile
     },
     devtool: "source-map",
     resolve: {
@@ -74,8 +75,8 @@ const browserConfig = {
     output: {
         libraryTarget: "var",
         library:       "myLib",
-        path:          buildConfig.outputDir,
-        filename:      'myLib.js'   // TODO: The production version should just be .min.js
+        path:          path.join(__dirname, 'dist'),
+        filename:      buildConfig.browserOutputFile
     },
     devtool: "source-map",
     resolve: {
