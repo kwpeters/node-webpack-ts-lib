@@ -1,3 +1,5 @@
+import * as _ from "lodash";
+
 export class Person {
 
     private _firstName: string;
@@ -10,6 +12,10 @@ export class Person {
 
     public speak(): string {
         return `Hello, my name is ${this._firstName} ${this._lastName}`;
+    }
+
+    public random(): number {
+        return _.random(1, 10);
     }
 
 }

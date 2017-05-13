@@ -52,7 +52,8 @@ function main() {
 
     console.log(`Building ${buildType}...`);
 
-    childProcess.execSync(cmd, options);
+    const stdout = childProcess.execSync(cmd, options);
+    console.log(Buffer.isBuffer(stdout)? stdout.toString(): stdout);
 
     // Copy the type definitions file to the appropriate output location.
     // Unfortunately, webpack will not do this for us.
