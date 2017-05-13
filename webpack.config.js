@@ -8,7 +8,7 @@ const modules = Object.keys(require('./package.json').dependencies);
 const nodeExternalPackages = modules.reduce(function (acc, curModule) {
     //
     // When building for Node.js, we should not include dependent packages.
-    // Dependent packages will be automatically installed using npm and the
+    // Dependencies will be automatically installed using npm and the
     // package.json dependencies mechanism.
     //
     acc[curModule] = "commonjs " + curModule;
