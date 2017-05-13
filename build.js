@@ -1,6 +1,6 @@
 const path = require('path');
 const childProcess = require('child_process');
-const fs = require('fs');
+const del = require('del');
 
 
 const buildTypeEnum = {
@@ -35,6 +35,9 @@ function main() {
     // add the node_modules/.bin folder to the PATH.
     const augmentedPath = getPathWithNpmBin();
 
+    // Delete the current type definitions file
+    del.sync(['dist/index.d.ts']);
+
     // The command used to run webpack.
     const cmd = 'webpack --config webpack.config.js --progress --colors';
 
@@ -42,6 +45,9 @@ function main() {
                       buildTypeEnum.PRODUCTION :
                       buildTypeEnum.DEV;
     const buildConfig = getConfig(buildType);
+
+    // Clean the output directory.
+    del.sync(buildConfig.outputDir);
 
     const options = {
         env: {
@@ -54,13 +60,6 @@ function main() {
 
     const stdout = childProcess.execSync(cmd, options);
     console.log(Buffer.isBuffer(stdout)? stdout.toString(): stdout);
-
-    // Copy the type definitions file to the appropriate output location.
-    // Unfortunately, webpack will not do this for us.
-    fs.renameSync(
-        path.join(__dirname, 'dist', 'index.d.ts'),
-        path.join(buildConfig.outputDir, 'index.d.ts')
-    );
 
     console.log("Build succeeded.");
 }
